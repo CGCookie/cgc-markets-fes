@@ -94,7 +94,7 @@ class CGC_Markets_FES_Dev_Fund {
 				$('#dev_fund_slider').slider({
 					max: 70,
 					value: '<?php echo $amount; ?>',
-					change: function( event, ui ) {
+					slide: function( event, ui ) {
 						$('#dev_fund_amount').val( ui.value );
 						$('#dev_fund_amount_wrap label span').text( ui.value );
 					}
