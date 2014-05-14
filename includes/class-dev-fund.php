@@ -92,7 +92,7 @@ class CGC_Markets_FES_Dev_Fund {
 					$('#dev_fund_amount_wrap').toggle();
 				});
 				$('#dev_fund_slider').slider({
-					max: 100,
+					max: 70,
 					value: '<?php echo $amount; ?>',
 					change: function( event, ui ) {
 						$('#dev_fund_amount').val( ui.value );
@@ -158,9 +158,18 @@ class CGC_Markets_FES_Dev_Fund {
 				$recipients[] = $dev_fund_id;
 				$settings['user_id'] = implode( ',', $recipients );
 
-				$rates      = array_map( 'trim', explode( ',', $settings['amount'] ) );
-				$rate_key   = array_search( $dev_fund_id, $recipients );
+				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
+				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
+				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 				
+				// Set the new vendor rate
+				if( false !== $vendor_rate_key ) {
+					$rates[ $vendor_rate_key ] = 70 - $amount;
+				} else {
+					$rates[] = 70 - $amount;
+				}
+
+				// Set the new dev fund rate
 				if( false !== $rate_key ) {
 					$rates[ $rate_key ] = $amount;
 				} else {
@@ -196,13 +205,19 @@ class CGC_Markets_FES_Dev_Fund {
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
 				
 				// Remove dev fund rate
-				$rates      = array_map( 'trim', explode( ',', $settings['amount'] ) );
-				$rate_key   = array_search( $dev_fund_id, $recipients );
+				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
+				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
+				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 				
-				if( false !== $rate_key ) {
-					$rates[ $rate_key ] = $amount;
+				if( false !== $dev_rate_key ) {
+					unset( $rates[ $dev_rate_key ] );
+				}
+
+				// Set the new vendor rate
+				if( false !== $vendor_rate_key ) {
+					$rates[ $vendor_rate_key ] = 70;
 				} else {
-					$rates[] = $amount;
+					$rates[] = 70;
 				}
 
 				$settings['amount'] = implode( ',', $rates );
