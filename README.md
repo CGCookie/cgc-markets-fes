@@ -13,11 +13,6 @@ To setup dev fund tracking, do the following:
 
 1. Specify the ID of the dev fund user account. This user ID is set in Downloads > Settings > Misc.
 
-2. Create a field in the Submission form with the following options:
-- Required: Yes
-- Field Label: (anything)
-- Meta Key: dev_fund
-- Help Text: (anything)
-- Options: No, Yes 
+2. Add the "Dev Fund" field to the submission form and give it a name and description. Set it to Required.
 
 3. When a vendor opts into the dev fund, his/her product will be tagged with a tag of "dev-fund". This tag can be used to query all products that are contributing to the dev fund.
