@@ -137,7 +137,7 @@ class CGC_Markets_FES_Dev_Fund {
 				wp_insert_term( 'dev-fund', 'download_tag' );
 			}
 
-			wp_set_object_terms( $post_id, 'dev-fund', 'download_tag' );
+			wp_set_object_terms( $post_id, 'dev-fund', 'download_tag', true );
 
 			$dev_fund_id = edd_get_option( 'dev_fund_user', false );
 
