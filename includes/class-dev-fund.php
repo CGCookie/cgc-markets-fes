@@ -116,7 +116,7 @@ class CGC_Markets_FES_Dev_Fund {
 				<input type="radio" id="dev_fund_no" name="dev_fund" value="no"<?php checked( false, $yes ); ?>/> No
 			</label>
 			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
-				<label>How much of each sale would you like to contribute? <span>$</span><span class="amount"><?php echo absint( $amount ); ?></span></label>
+				<label>How much of each sale would you like to contribute? <span class="amount"><?php echo absint( $amount ); ?></span><span>$</span></label>
 				<div id="dev_fund_slider"></div>
 				<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
 			</div>
