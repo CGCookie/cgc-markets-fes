@@ -101,7 +101,7 @@ class CGC_Markets_FES_Dev_Fund {
 
 						//console.log(priceValue);
 						$('#dev_fund_amount').val( ui.value );
-						$('#dev_fund_total .amount').text( ui.value / setPrice );
+						$('#dev_fund_total .amount').text( setPrice * ui.value / 100);
 
 
 					}
