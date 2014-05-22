@@ -101,7 +101,7 @@ class CGC_Markets_FES_Dev_Fund {
 
 						//console.log(priceValue);
 						$('#dev_fund_amount').val( ui.value );
-						$('#dev_fund_amount_wrap .amount').text( ui.value / setPrice );
+						$('#dev_fund_total .amount').text( ui.value / setPrice );
 
 
 					}
@@ -116,7 +116,11 @@ class CGC_Markets_FES_Dev_Fund {
 				<input type="radio" id="dev_fund_no" name="dev_fund" value="no"<?php checked( false, $yes ); ?>/> No
 			</label>
 			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
-				<label>How much of each sale would you like to contribute? <span class="amount"><?php echo absint( $amount ); ?></span><span>$</span></label>
+				<label>How much of each sale would you like to contribute?</label>
+				<div id="dev_fund_total">
+					<span>$</span>
+					<span class="amount"><?php echo absint( $amount ); ?></span>
+				</div>
 				<div id="dev_fund_slider"></div>
 				<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
 			</div>
