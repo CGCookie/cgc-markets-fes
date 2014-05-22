@@ -1,21 +1,21 @@
 <?php
 
 class CGC_Markets_FES_Dev_Fund {
-	
+
 	public function __construct() {
 		add_action( 'fes_custom_post_button', array( $this, 'dev_fund_field_button' ) );
 		add_action( 'fes_admin_field_dev_fund', array( $this, 'dev_fund_admin_field' ), 10, 3 );
 		add_filter( 'fes_formbuilder_custom_field', array( $this, 'dev_fund_formbuilder_is_custom_field' ), 10, 2 );
 		add_action( 'fes_render_field_dev_fund', array( $this, 'dev_fund_field' ), 10, 3 );
 		add_action( 'fes_submit_submission_form_bottom', array( $this, 'save_dev_fund_status' ) );
-	
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'scripts' ) );
 
 		add_filter( 'edd_settings_misc', array( $this, 'settings' ) );
 
 	}
 	/**
-	 * Register a custom FES submission form button 
+	 * Register a custom FES submission form button
 	 *
 	 * @since 2.0
 	 *
@@ -95,8 +95,15 @@ class CGC_Markets_FES_Dev_Fund {
 					max: 70,
 					value: '<?php echo $amount; ?>',
 					slide: function( event, ui ) {
+
+						// get amount
+						var setPrice = $('.fes-price-value').val();
+
+						//console.log(priceValue);
 						$('#dev_fund_amount').val( ui.value );
-						$('#dev_fund_amount_wrap label span').text( ui.value );
+						$('#dev_fund_amount_wrap .amount').text( ui.value / setPrice );
+
+
 					}
 				});
 			});
@@ -109,7 +116,7 @@ class CGC_Markets_FES_Dev_Fund {
 				<input type="radio" id="dev_fund_no" name="dev_fund" value="no"<?php checked( false, $yes ); ?>/> No
 			</label>
 			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
-				<label>How much of each sale would you like to contribute? <span><?php echo absint( $amount ); ?></span>%</label>
+				<label>How much of each sale would you like to contribute? <span>$</span><span class="amount"><?php echo absint( $amount ); ?></span></label>
 				<div id="dev_fund_slider"></div>
 				<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
 			</div>
@@ -130,7 +137,7 @@ class CGC_Markets_FES_Dev_Fund {
 		$amount   = ! empty( $_POST['dev_fund_amount'] ) ? absint( $_POST['dev_fund_amount'] ) : 0;
 
 		if ( ! empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && ! empty( $amount ) ) {
-			
+
 			// User has opted into the dev fund
 
 			if( ! term_exists( 'dev-fund', 'download_tag' ) ) {
@@ -142,14 +149,14 @@ class CGC_Markets_FES_Dev_Fund {
 			$dev_fund_id = edd_get_option( 'dev_fund_user', false );
 
 			if( ! empty( $dev_fund_id ) ) {
-				
+
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
 				if( in_array( $dev_fund_id, $recipients ) ) {
 
 					return; // Dev fund ID already set
-				
+
 				}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
@@ -161,7 +168,7 @@ class CGC_Markets_FES_Dev_Fund {
 				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
-				
+
 				// Set the new vendor rate
 				if( false !== $vendor_rate_key ) {
 					$rates[ $vendor_rate_key ] = 70 - $amount;
@@ -192,23 +199,23 @@ class CGC_Markets_FES_Dev_Fund {
 			$dev_fund_id = edd_get_option( 'dev_fund_user', false );
 
 			if( ! empty( $dev_fund_id ) ) {
-				
+
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
 				if( ! in_array( $dev_fund_id, $recipients ) ) {
 
 					return; // Dev fund ID not set
-				
+
 				}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
-				
+
 				// Remove dev fund rate
 				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
-				
+
 				if( false !== $dev_rate_key ) {
 					unset( $rates[ $dev_rate_key ] );
 				}
@@ -234,7 +241,7 @@ class CGC_Markets_FES_Dev_Fund {
 
 		}
 	}
-	
+
 	/**
 	 * Scripts
 	 *
@@ -242,7 +249,7 @@ class CGC_Markets_FES_Dev_Fund {
 	 *
 	 * @return void
 	 */
-	public function scripts() {	
+	public function scripts() {
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-slider' );
 	}
