@@ -101,7 +101,8 @@ class CGC_Markets_FES_Dev_Fund {
 
 						//console.log(priceValue);
 						$('#dev_fund_amount').val( ui.value );
-						$('#dev_fund_total .amount').text( setPrice * ui.value / 100);
+						$('#dev_fund_percentage .percentage').text(ui.value);
+						$('#dev_fund_total .amount').text( (setPrice) * ui.value / 100 );
 
 
 					}
@@ -117,8 +118,13 @@ class CGC_Markets_FES_Dev_Fund {
 			</label>
 			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
 				<label>How much of each sale would you like to contribute?</label>
+				<div id="dev_fund_percentage">
+					<span class="percentage">0</span>
+					<span class="percentage-sign">%</span>
+				</div>
+				<span class="equals">=</span>
 				<div id="dev_fund_total">
-					<span>$</span>
+					<span class="dollar-sign">$</span>
 					<span class="amount"><?php echo absint( $amount ); ?></span>
 				</div>
 				<div id="dev_fund_slider"></div>
