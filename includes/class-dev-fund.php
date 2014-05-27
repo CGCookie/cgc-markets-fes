@@ -198,6 +198,9 @@ class CGC_Markets_FES_Dev_Fund {
 				update_post_meta( $post_id, 'dev_fund_amount', $amount );
 				update_post_meta( $post_id, '_edd_commission_settings', $settings );
 
+				// set a flag for this vendor that they are a contributor
+				update_post_meta( get_current_user_id(), 'dev_fund_contributor', true );
+
 			}
 
 		} else {
