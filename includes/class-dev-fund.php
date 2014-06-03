@@ -98,11 +98,13 @@ class CGC_Markets_FES_Dev_Fund {
 
 						// get amount
 						var setPrice = $('.fes-price-value').val();
+						var totalPrice = setPrice * (ui.value / 100);
+						var totalPriceRounded = totalPrice.toFixed(2);
 
 						//console.log(priceValue);
 						$('#dev_fund_amount').val( ui.value );
 						$('#dev_fund_percentage .percentage').text(ui.value);
-						$('#dev_fund_total .amount').text( (setPrice) * ui.value / 100 );
+						$('#dev_fund_total .amount').text( totalPriceRounded);
 
 
 					}
