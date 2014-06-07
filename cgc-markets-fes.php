@@ -13,6 +13,7 @@ class CGC_Markets_FES {
 	public function __construct() {
 
 		$this->includes();
+		$this->filters();
 
 	}
 
@@ -23,6 +24,15 @@ class CGC_Markets_FES {
 
 		$this->dev_fund = new CGC_Markets_FES_Dev_Fund;
 
+	}
+
+	public function filters() {
+		add_filter( 'fes_vendor_dashboard_menu', array( $this, 'remove_logout_menu' ) );
+	}
+
+	public function remove_logout_menu( $menu ) {
+		unset( $menu['logout'] );
+		return $menu;
 	}
 
 
