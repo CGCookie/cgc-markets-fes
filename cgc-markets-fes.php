@@ -28,11 +28,19 @@ class CGC_Markets_FES {
 
 	public function filters() {
 		add_filter( 'fes_vendor_dashboard_menu', array( $this, 'remove_logout_menu' ) );
+		add_filter( 'fes_register_form_pending_vendor', array( $this, 'vendor_registration_redirect' ) );
 	}
 
 	public function remove_logout_menu( $menu ) {
 		unset( $menu['logout'] );
 		return $menu;
+	}
+
+	public function vendor_registration_redirect( $response ) {
+	
+		$response['redirect_to'] = home_url( 'vendor-app-confirmation' );
+
+		return $response;
 	}
 
 
