@@ -189,8 +189,8 @@ class CGC_Markets_FES_Dev_Fund {
 				}
 
 				// Set the new dev fund rate
-				if( false !== $rate_key ) {
-					$rates[ $rate_key ] = $amount;
+				if( false !== $dev_rate_key ) {
+					$rates[ $dev_rate_key ] = $amount;
 				} else {
 					$rates[] = $amount;
 				}
