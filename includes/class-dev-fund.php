@@ -85,6 +85,10 @@ class CGC_Markets_FES_Dev_Fund {
 		$yes     = has_term( 'dev-fund', 'download_tag', $post_id );
 		$amount  = get_post_meta( $post_id, 'dev_fund_amount', true );
 		$display = $yes ? '' : 'display:none;';
+
+		$item_price = edd_get_download_price( $post_id );
+		$saved_amount = $item_price * ($amount / 100);
+
 		?>
 		<script>
 			jQuery(function($){
@@ -95,6 +99,7 @@ class CGC_Markets_FES_Dev_Fund {
 					max: 70,
 					value: '<?php echo $amount; ?>',
 					slide: function( event, ui ) {
+						console.log(ui.value);
 
 						// get amount
 						var setPrice = $('.fes-price-value').val();
@@ -121,13 +126,13 @@ class CGC_Markets_FES_Dev_Fund {
 			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
 				<label>How much of each sale would you like to contribute?</label>
 				<div id="dev_fund_percentage">
-					<span class="percentage">0</span>
+					<span class="percentage"><?php echo absint( $amount ); ?></span>
 					<span class="percentage-sign">%</span>
 				</div>
 				<span class="equals">=</span>
 				<div id="dev_fund_total">
 					<span class="dollar-sign">$</span>
-					<span class="amount"><?php echo absint( $amount ); ?></span>
+					<span class="amount"><?php echo number_format( $saved_amount, 2 ); ?></span>
 				</div>
 				<div id="dev_fund_slider"></div>
 				<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
@@ -165,11 +170,11 @@ class CGC_Markets_FES_Dev_Fund {
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
-				if( in_array( $dev_fund_id, $recipients ) ) {
+				//if( in_array( $dev_fund_id, $recipients ) ) {
 
-					return; // Dev fund ID already set
+					//return; // Dev fund ID already set
 
-				}
+				//}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
 
