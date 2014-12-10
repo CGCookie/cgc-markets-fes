@@ -170,11 +170,11 @@ class CGC_Markets_FES_Dev_Fund {
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
-				//if( in_array( $dev_fund_id, $recipients ) ) {
+				if( in_array( $dev_fund_id, $recipients ) ) {
 
-					//return; // Dev fund ID already set
+					return; // Dev fund ID already set
 
-				//}
+				}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
 
