@@ -185,21 +185,9 @@ class CGC_Markets_FES_Dev_Fund {
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 
 				// if this vendor is already part of the dev fund users, then update their rate as they set it
-				if( in_array( $dev_fund_id, $recipients ) ) {
+				if( !in_array( $dev_fund_id, $recipients ) ) {
 
-					// Set the new vendor rate
-					if( false !== $vendor_rate_key ) {
-						$rates[ $vendor_rate_key ] = 70 - $amount;
-					} else {
-						$rates[] = 70 - $amount;
-					}
-
-					// update the total dev fund amopunt
-					update_post_meta( $post_id, 'dev_fund_amount', $amount );
-
-
-				// this vendor is a first timer, so set the new dev fund rate
-				} else {
+					// this vendor is a first timer, so set the new dev fund rate
 
 					// Set the new dev fund rate
 					if( false !== $dev_rate_key ) {
@@ -214,6 +202,15 @@ class CGC_Markets_FES_Dev_Fund {
 					update_post_meta( $post_id, '_edd_commission_settings', $settings );
 				}
 
+				// Set the new vendor rate
+				if( false !== $vendor_rate_key ) {
+					$rates[ $vendor_rate_key ] = 70 - $amount;
+				} else {
+					$rates[] = 70 - $amount;
+				}
+
+				// update the total dev fund amopunt
+				update_post_meta( $post_id, 'dev_fund_amount', $amount );
 
 				// set a flag for this vendor that they are a contributor
 				update_user_meta( get_current_user_id(), 'dev_fund_contributor', true );
