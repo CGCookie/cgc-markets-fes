@@ -99,7 +99,7 @@ class CGC_Markets_FES_Dev_Fund {
 					max: 70,
 					value: '<?php echo $amount; ?>',
 					slide: function( event, ui ) {
-						console.log(ui.value);
+						//console.log(ui.value);
 
 						// get amount
 						var setPrice = $('.fes-price-value').val();
@@ -153,6 +153,7 @@ class CGC_Markets_FES_Dev_Fund {
 		$dev_fund = ! empty( $_POST ['dev_fund'] ) ? sanitize_text_field( $_POST ['dev_fund'] ) : false;
 		$amount   = ! empty( $_POST['dev_fund_amount'] ) ? absint( $_POST['dev_fund_amount'] ) : 0;
 
+		// if the dev fund isnt' empty and they opted in and the amount isn't empty
 		if ( ! empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && ! empty( $amount ) ) {
 
 			// User has opted into the dev fund
@@ -161,20 +162,17 @@ class CGC_Markets_FES_Dev_Fund {
 				wp_insert_term( 'dev-fund', 'download_tag' );
 			}
 
+			// give this download a dev-fund download tag
 			wp_set_object_terms( $post_id, 'dev-fund', 'download_tag', true );
 
+			// get the userid of the devfund user assigned to recieve commissions
 			$dev_fund_id = edd_get_option( 'dev_fund_user', false );
 
+			// if the dev fund isnt empty, let's continue
 			if( ! empty( $dev_fund_id ) ) {
 
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
-
-				if( in_array( $dev_fund_id, $recipients ) ) {
-
-					return; // Dev fund ID already set
-
-				}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
 
@@ -186,23 +184,35 @@ class CGC_Markets_FES_Dev_Fund {
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 
-				// Set the new vendor rate
-				if( false !== $vendor_rate_key ) {
-					$rates[ $vendor_rate_key ] = 70 - $amount;
-				} else {
-					$rates[] = 70 - $amount;
-				}
+				// if this vendor is already part of the dev fund users, then update their rate as they set it
+				if( in_array( $dev_fund_id, $recipients ) ) {
 
-				// Set the new dev fund rate
-				if( false !== $dev_rate_key ) {
-					$rates[ $dev_rate_key ] = $amount;
+					// Set the new vendor rate
+					if( false !== $vendor_rate_key ) {
+						$rates[ $vendor_rate_key ] = 70 - $amount;
+					} else {
+						$rates[] = 70 - $amount;
+					}
+
+					// update the total dev fund amopunt
+					update_post_meta( $post_id, 'dev_fund_amount', $amount );
+
+
+				// this vendor is a first timer, so set the new dev fund rate
 				} else {
-					$rates[] = $amount;
+
+					// Set the new dev fund rate
+					if( false !== $dev_rate_key ) {
+						$rates[ $dev_rate_key ] = $amount;
+					} else {
+						$rates[] = $amount;
+					}
+
 				}
 
 				$settings['amount'] = implode( ',', $rates );
 
-				update_post_meta( $post_id, 'dev_fund_amount', $amount );
+				// update the commission settings for this download
 				update_post_meta( $post_id, '_edd_commission_settings', $settings );
 
 				// set a flag for this vendor that they are a contributor
