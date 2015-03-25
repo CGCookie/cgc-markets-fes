@@ -208,12 +208,12 @@ class CGC_Markets_FES_Dev_Fund {
 						$rates[] = $amount;
 					}
 
+					$settings['amount'] = implode( ',', $rates );
+
+					// update the commission settings for this download
+					update_post_meta( $post_id, '_edd_commission_settings', $settings );
 				}
 
-				$settings['amount'] = implode( ',', $rates );
-
-				// update the commission settings for this download
-				update_post_meta( $post_id, '_edd_commission_settings', $settings );
 
 				// set a flag for this vendor that they are a contributor
 				update_user_meta( get_current_user_id(), 'dev_fund_contributor', true );
