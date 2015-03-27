@@ -116,6 +116,17 @@ class CGC_Markets_FES_Dev_Fund {
 				});
 			});
 		</script>
+		<?php
+
+		// TEST DUMP
+		//$test = get_post_meta( $post_id, '_edd_commission_settings', true );
+		//$amount = get_post_meta( $post_id, 'dev_fund_amount', true );
+
+		//var_dump( $test );
+		//var_dump( 'devfundamount-'.$amount );
+
+		// END TEST DUMP
+		?>
 		<div class="fes-fields <?php echo sanitize_key( $attr['name']); ?>">
 			<label for="dev_fund_yes">
 				<input type="radio" id="dev_fund_yes" name="dev_fund" value="yes"<?php checked( true, $yes ); ?>/> Yes
@@ -150,6 +161,8 @@ class CGC_Markets_FES_Dev_Fund {
 	 */
 	public function save_dev_fund_status( $post_id ) {
 
+		///////
+
 		$dev_fund = ! empty( $_POST ['dev_fund'] ) ? sanitize_text_field( $_POST ['dev_fund'] ) : false;
 		$amount   = ! empty( $_POST['dev_fund_amount'] ) ? absint( $_POST['dev_fund_amount'] ) : 0;
 
@@ -168,11 +181,21 @@ class CGC_Markets_FES_Dev_Fund {
 			// get the userid of the devfund user assigned to recieve commissions
 			$dev_fund_id = edd_get_option( 'dev_fund_user', false );
 
-			// if the dev fund isnt empty, let's continue
+
+			update_post_meta( $post_id, 'dev_fund_amount', $amount );
+
+			// if the dev fund isnt empty, let's continu
+
 			if( ! empty( $dev_fund_id ) ) {
 
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
+
+				if( in_array( $dev_fund_id, $recipients ) ) {
+
+					return; // Dev fund ID already set
+
+				}
 
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
 
@@ -184,24 +207,6 @@ class CGC_Markets_FES_Dev_Fund {
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 
-				// if this vendor is already part of the dev fund users, then update their rate as they set it
-				if( !in_array( $dev_fund_id, $recipients ) ) {
-
-					// this vendor is a first timer, so set the new dev fund rate
-
-					// Set the new dev fund rate
-					if( false !== $dev_rate_key ) {
-						$rates[ $dev_rate_key ] = $amount;
-					} else {
-						$rates[] = $amount;
-					}
-
-					$settings['amount'] = implode( ',', $rates );
-
-					// update the commission settings for this download
-					update_post_meta( $post_id, '_edd_commission_settings', $settings );
-				}
-
 				// Set the new vendor rate
 				if( false !== $vendor_rate_key ) {
 					$rates[ $vendor_rate_key ] = 70 - $amount;
@@ -209,13 +214,23 @@ class CGC_Markets_FES_Dev_Fund {
 					$rates[] = 70 - $amount;
 				}
 
-				// update the total dev fund amopunt
-				update_post_meta( $post_id, 'dev_fund_amount', $amount );
+				// Set the new dev fund rate
+				if( false !== $dev_rate_key ) {
+					$rates[ $dev_rate_key ] = $amount;
+				} else {
+					$rates[] = $amount;
+				}
+
+				$settings['amount'] = implode( ',', $rates );
+
+
+				update_post_meta( $post_id, '_edd_commission_settings', $settings );
 
 				// set a flag for this vendor that they are a contributor
 				update_user_meta( get_current_user_id(), 'dev_fund_contributor', true );
 
 			}
+
 
 		} else {
 
