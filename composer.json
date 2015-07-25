@@ -1,0 +1,27 @@
+{
+   	"name": "cgcookie/cgc-markets-fes",
+   	"type": "wordpress-plugin",
+	"description": "CGC Front End Submission",
+	"keywords": [ "plugin","fes","edd"],
+	"homepage": "https://cgcookiemarkets.com",
+	"authors": [
+	    {
+	      	"name": "Nick Haskins",
+	      	"email": "nick@cgcookie.com",
+	      	"homepage": "http://cgcookie.com"
+	    },
+	    {
+	      	"name": "Wes Burke",
+	      	"email": "wes@cgcookie.com",
+	      	"homepage": "http://cgcookie.com"
+	    },
+	   	{
+	      	"name": "Jonathan Williamson",
+	      	"email": "jonathan@cgcookie.com",
+	      	"homepage": "http://cgcookie.com"
+	    }
+	],
+   	"require": {
+     	"composer/installers": "~1.0.6"
+   	}
+}
