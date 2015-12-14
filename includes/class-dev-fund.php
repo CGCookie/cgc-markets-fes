@@ -150,10 +150,12 @@ class CGC_Markets_FES_Dev_Fund {
 	 */
 	public function save_dev_fund_status( $post_id ) {
 
+
+
 		$dev_fund = ! empty( $_POST ['dev_fund'] ) ? sanitize_text_field( $_POST ['dev_fund'] ) : false;
 		$amount   = ! empty( $_POST['dev_fund_amount'] ) ? absint( $_POST['dev_fund_amount'] ) : 0;
 
-		if ( ! empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && ! empty( $amount ) ) {
+		if ( !empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && !empty( $amount ) ) {
 
 			// User has opted into the dev fund
 
@@ -170,17 +172,7 @@ class CGC_Markets_FES_Dev_Fund {
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
-				if( in_array( $dev_fund_id, $recipients ) ) {
-
-					return; // Dev fund ID already set
-
-				}
-
 				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
-
-				// Add the dev fund user to the recipients
-				$recipients[] = $dev_fund_id;
-				$settings['user_id'] = implode( ',', $recipients );
 
 				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
@@ -188,6 +180,7 @@ class CGC_Markets_FES_Dev_Fund {
 
 				// Set the new vendor rate
 				if( false !== $vendor_rate_key ) {
+					unset( $rates[ $vendor_rate_key ] );
 					$rates[ $vendor_rate_key ] = 70 - $amount;
 				} else {
 					$rates[] = 70 - $amount;
@@ -195,11 +188,17 @@ class CGC_Markets_FES_Dev_Fund {
 
 				// Set the new dev fund rate
 				if( false !== $dev_rate_key ) {
+
 					$rates[ $dev_rate_key ] = $amount;
 				} else {
 					$rates[] = $amount;
 				}
 
+				if( !in_array( $dev_fund_id, $recipients ) ) {
+					$recipients[] = $dev_fund_id;
+					$settings['user_id'] = implode( ',', $recipients );
+
+				}
 				$settings['amount'] = implode( ',', $rates );
 
 				update_post_meta( $post_id, 'dev_fund_amount', $amount );
