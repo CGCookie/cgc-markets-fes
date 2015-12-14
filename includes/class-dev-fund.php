@@ -172,7 +172,7 @@ class CGC_Markets_FES_Dev_Fund {
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
-				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
+				$settings 		= get_post_meta( $post_id, '_edd_commission_settings', true );
 
 				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
@@ -188,7 +188,7 @@ class CGC_Markets_FES_Dev_Fund {
 
 				// Set the new dev fund rate
 				if( false !== $dev_rate_key ) {
-
+					unset( $rates[ $vendor_rate_key ] );
 					$rates[ $dev_rate_key ] = $amount;
 				} else {
 					$rates[] = $amount;
