@@ -150,12 +150,10 @@ class CGC_Markets_FES_Dev_Fund {
 	 */
 	public function save_dev_fund_status( $post_id ) {
 
-
-
 		$dev_fund = ! empty( $_POST ['dev_fund'] ) ? sanitize_text_field( $_POST ['dev_fund'] ) : false;
 		$amount   = ! empty( $_POST['dev_fund_amount'] ) ? absint( $_POST['dev_fund_amount'] ) : 0;
 
-		if ( !empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && !empty( $amount ) ) {
+		if ( ! empty( $dev_fund ) && 'yes' == strtolower( $dev_fund )  && ! empty( $amount ) ) {
 
 			// User has opted into the dev fund
 
@@ -172,34 +170,39 @@ class CGC_Markets_FES_Dev_Fund {
 				// Get the commission recipients
 				$recipients = eddc_get_recipients( $post_id );
 
-				$settings 		= get_post_meta( $post_id, '_edd_commission_settings', true );
+				$settings = get_post_meta( $post_id, '_edd_commission_settings', true );
+	
+				
 
 				$rates           = array_map( 'trim', explode( ',', $settings['amount'] ) );
 				$vendor_rate_key = array_search( get_current_user_id(), $recipients );
 				$dev_rate_key    = array_search( $dev_fund_id, $recipients );
 
-				// Set the new vendor rate
-				if( false !== $vendor_rate_key ) {
-					unset( $rates[ $vendor_rate_key ] );
-					$rates[ $vendor_rate_key ] = 70 - $amount;
-				} else {
-					$rates[] = 70 - $amount;
-				}
+					// Set the new dev fund rate
+					if( false !== $dev_rate_key ) {
+						$rates[ $dev_rate_key ] = $amount;
+					} else {
+						$rates[] = $amount;
+					}
 
-				// Set the new dev fund rate
-				if( false !== $dev_rate_key ) {
-					unset( $rates[ $vendor_rate_key ] );
-					$rates[ $dev_rate_key ] = $amount;
-				} else {
-					$rates[] = $amount;
-				}
 
+				$settings['amount'] = implode( ',', $rates );
+
+				// if dev fund id not already set
 				if( !in_array( $dev_fund_id, $recipients ) ) {
+
+					// add the recipient
 					$recipients[] = $dev_fund_id;
 					$settings['user_id'] = implode( ',', $recipients );
 
+					// Set the new vendor rate
+					if( false !== $vendor_rate_key ) {
+						$rates[ $vendor_rate_key ] = 70 - $amount;
+					} else {
+						$rates[] = 70 - $amount;
+					}
+
 				}
-				$settings['amount'] = implode( ',', $rates );
 
 				update_post_meta( $post_id, 'dev_fund_amount', $amount );
 				update_post_meta( $post_id, '_edd_commission_settings', $settings );
