@@ -90,54 +90,68 @@ class CGC_Markets_FES_Dev_Fund {
 		$saved_amount = $item_price * ($amount / 100);
 
 		?>
-		<script>
-			jQuery(function($){
-				$('#dev_fund_yes,#dev_fund_no').change(function() {
-					$('#dev_fund_amount_wrap').toggle();
-				});
-				$('#dev_fund_slider').slider({
-					max: 70,
-					value: '<?php echo $amount; ?>',
-					slide: function( event, ui ) {
-						console.log(ui.value);
-
-						// get amount
-						var setPrice = $('.fes-price-value').val();
-						var totalPrice = setPrice * (ui.value / 100);
-						var totalPriceRounded = totalPrice.toFixed(2);
-
-						//console.log(priceValue);
-						$('#dev_fund_amount').val( ui.value );
-						$('#dev_fund_percentage .percentage').text(ui.value);
-						$('#dev_fund_total .amount').text( totalPriceRounded);
-
-
-					}
-				});
-			});
-		</script>
-		<div class="fes-fields <?php echo sanitize_key( $attr['name']); ?>">
-			<label for="dev_fund_yes">
-				<input type="radio" id="dev_fund_yes" name="dev_fund" value="yes"<?php checked( true, $yes ); ?>/> Yes
-			</label>
-			<label for="dev_fund_no">
-				<input type="radio" id="dev_fund_no" name="dev_fund" value="no"<?php checked( false, $yes ); ?>/> No
-			</label>
-			<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
-				<label>How much of each sale would you like to contribute?</label>
-				<div id="dev_fund_percentage">
-					<span class="percentage"><?php echo absint( $amount ); ?></span>
-					<span class="percentage-sign">%</span>
-				</div>
-				<span class="equals">=</span>
-				<div id="dev_fund_total">
-					<span class="dollar-sign">$</span>
-					<span class="amount"><?php echo number_format( $saved_amount, 2 ); ?></span>
-				</div>
-				<div id="dev_fund_slider"></div>
-				<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
+		<fieldset class="fes-el dev_fund cgc-pretty-form"> 
+			<div class="fes-label">
+				<label for="fes-dev_fund" class="developmentfundcontribution">Development Fund Contribution <span class="edd-required-indicator">*</span></label>
+				<span class="fes-help">
+					You may choose to contribute a portion of your earnings to the Blender Development Fund. This helps support further Blender development.
+				</span>
+				<span class="fes-help">
+					The contribution amount is based on total product price. And so you may contribute anywhere from 0-70% of total price (since 70% is your cut).
+				</span>
+				<span class="fes-help">
+					Would you like to contribute a percentage of each sale of this product to the Blender Development Fund?
+				</span>
 			</div>
-		</div> <!-- .fes-fields -->
+			<script>
+				jQuery(function($){
+					$('#dev_fund_yes,#dev_fund_no').change(function() {
+						$('#dev_fund_amount_wrap').toggle();
+					});
+					$('#dev_fund_slider').slider({
+						max: 70,
+						value: '<?php echo $amount; ?>',
+						slide: function( event, ui ) {
+							console.log(ui.value);
+
+							// get amount
+							var setPrice = $('.fes-price-value').val();
+							var totalPrice = setPrice * (ui.value / 100);
+							var totalPriceRounded = totalPrice.toFixed(2);
+
+							//console.log(priceValue);
+							$('#dev_fund_amount').val( ui.value );
+							$('#dev_fund_percentage .percentage').text(ui.value);
+							$('#dev_fund_total .amount').text( totalPriceRounded);
+
+
+						}
+					});
+				});
+			</script>
+			<div class="fes-fields dev_fund">
+				<label for="dev_fund_yes">
+					<input type="radio" id="dev_fund_yes" name="dev_fund" value="yes"<?php checked( true, $yes ); ?>/> Yes
+				</label>
+				<label for="dev_fund_no">
+					<input type="radio" id="dev_fund_no" name="dev_fund" value="no"<?php checked( false, $yes ); ?>/> No
+				</label>
+				<div id="dev_fund_amount_wrap" style="<?php echo $display; ?>">
+					<label>How much of each sale would you like to contribute?</label>
+					<div id="dev_fund_percentage">
+						<span class="percentage"><?php echo absint( $amount ); ?></span>
+						<span class="percentage-sign">%</span>
+					</div>
+					<span class="equals">=</span>
+					<div id="dev_fund_total">
+						<span class="dollar-sign">$</span>
+						<span class="amount"><?php echo number_format( $saved_amount, 2 ); ?></span>
+					</div>
+					<div id="dev_fund_slider"></div>
+					<input type="hidden" name="dev_fund_amount" id="dev_fund_amount" value="<?php echo esc_attr( absint( $amount ) ); ?>"/>
+				</div>
+			</div> <!-- .fes-fields -->
+		</fieldset>
 		<?php
 	}
 
